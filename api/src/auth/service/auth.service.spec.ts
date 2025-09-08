@@ -3,6 +3,7 @@ import { AuthService } from '../auth.service';
 import { UsersService } from '../../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -31,6 +32,7 @@ describe('AuthService', () => {
   });
 
   it('should validate user with correct password', async () => {
+    // sucesso: senha fornecida corresponde ao hash armazenado
     const password = await bcrypt.hash('123456', 10);
     usersService.findByEmail!.mockResolvedValue({
       id: 1,
@@ -45,6 +47,7 @@ describe('AuthService', () => {
   });
 
   it('should return null for invalid password', async () => {
+    // falha: bcrypt.compare falha porque senha não corresponde
     usersService.findByEmail!.mockResolvedValue({
       id: 1,
       email: 'test@test.com',
@@ -57,17 +60,19 @@ describe('AuthService', () => {
   });
 
   it('should register user and return jwt token', async () => {
-    usersService.create!.mockResolvedValue({
-      id: 1,
-      email: 'new@test.com',
-      username: 'newuser',
-    });
-
-    const result = await authService.register({
+    const dto: CreateUserDto = {
       username: 'newuser',
       email: 'new@test.com',
       password: '123456',
+    };
+
+    usersService.create!.mockResolvedValue({
+      id: 1,
+      email: dto.email,
+      username: dto.username,
     });
+
+    const result = await authService.register(dto);
 
     expect(result).toHaveProperty('access_token');
     expect(result.access_token).toBe('fake-jwt-token');

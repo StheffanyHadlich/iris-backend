@@ -1,8 +1,10 @@
+// src/users/users.service.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -10,7 +12,7 @@ export class UsersService {
 
   async create(data: CreateUserDto) {
     const exists = await this.usersRepository.findByEmail(data.email);
-    if (exists) throw new BadRequestException('Email já cadastrado');
+    if (exists) throw new BadRequestException('Email already registered');
 
     const hashed = await bcrypt.hash(data.password, 10);
     const user = await this.usersRepository.create({
@@ -23,23 +25,25 @@ export class UsersService {
     return safe;
   }
 
-  async findAll() {
+  findAll() {
     return this.usersRepository.findAll();
   }
 
-  async findOne(id: number) {
+  findOne(id: number) {
     return this.usersRepository.findOne(id);
   }
 
-  async findByEmail(email: string) {
+  findByEmail(email: string) {
     return this.usersRepository.findByEmail(email);
   }
 
   async update(id: number, data: UpdateUserDto) {
-    const payload: any = { ...data };
+    const payload: Prisma.UserUpdateInput = { ...data };
+
     if (payload.password) {
-      payload.password = await bcrypt.hash(payload.password, 10);
+      payload.password = await bcrypt.hash(payload.password as string, 10);
     }
+
     return this.usersRepository.update(id, payload);
   }
 

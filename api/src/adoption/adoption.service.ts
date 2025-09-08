@@ -1,37 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { Prisma, Adoption } from '@prisma/client';
+import { CreateAdoptionDto } from './dto/create-adoption.dto';
+import { UpdateAdoptionDto } from './dto/update-adoption.dto';
 
 @Injectable()
 export class AdoptionService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: any) {
-    return this.prisma.adoption.create({ 
-        data : {
-        ...data,
-        startDate: new Date(data.startDate),
-        endDate: data.endDate ? new Date(data.endDate) : undefined,
-        }
-    });
+  async create(dto: CreateAdoptionDto): Promise<Adoption> {
+    const data: Prisma.AdoptionCreateInput = {
+      startDate: new Date(dto.startDate),
+      endDate: dto.endDate ? new Date(dto.endDate) : undefined,
+      status: dto.status,
+      adopter: { connect: { id: dto.adopterId } },
+      pet: { connect: { id: dto.petId } },
+    };
+
+    return this.prisma.adoption.create({ data });
   }
 
-  findAll() {
+  async findAll(): Promise<Adoption[]> {
     return this.prisma.adoption.findMany();
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<Adoption | null> {
     return this.prisma.adoption.findUnique({ where: { id } });
   }
 
-  update(id: number, data: any) {
-    return this.prisma.adoption.update({ where: { id }, data: {
-        ...data,
-        endDate: data.endDate ? new Date(data.endDate) : undefined,
-        }
-    });
+  async update(id: number, dto: UpdateAdoptionDto): Promise<Adoption> {
+    const data: Prisma.AdoptionUpdateInput = {
+      startDate: dto.startDate ? new Date(dto.startDate) : undefined,
+      endDate: dto.endDate ? new Date(dto.endDate) : undefined,
+      status: dto.status,
+      adopter: dto.adopterId ? { connect: { id: dto.adopterId } } : undefined,
+      pet: dto.petId ? { connect: { id: dto.petId } } : undefined,
+    };
+
+    return this.prisma.adoption.update({ where: { id }, data });
   }
 
-  remove(id: number) {
+  async remove(id: number): Promise<Adoption> {
     return this.prisma.adoption.delete({ where: { id } });
   }
 }
