@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PetStatus {
+  AVAILABLE
+  ADOPTED
+  UNDER_TREATMENT
+}
+
+enum AdoptionStatus{
+  ACTIVE
+  COMPLETED
+  CANCELED
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String
+  email      String   @unique
+  password   String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("user")
+}
+
+model Pet {
+  id              Int       @id @default(autoincrement())
+  name            String
+  age             Int
+  type            String
+  race            String?
+  currentWeight   Decimal?  @db.Decimal(10,2)
+  urlPhoto        String?   @map("url_photo")
+  status          PetStatus @default(AVAILABLE)
+  registrationDate DateTime @db.Date @map("registration_date")
+
+  diaries          Daily[]
+  medicalHistories MedicalHistory[]
+  adoptions        Adoption[]
+
+  @@map("pets")
+}
+
+model Adopter {
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String  @unique
+  telephone String?
+  address   String?
+
+  adoptions Adoption[]
+
+  @@map("adopter")
+}
+
+model Daily {
+  id             Int      @id @default(autoincrement())
+  petId          Int      @map("pets_id")
+  dailyDate      DateTime @db.Date @map("daily_date")
+  weight         Decimal? @db.Decimal(10,2)
+  notes          String?
+  prescriptionNotes String? @map("prescription_notes")
+
+  pet Pet @relation(fields: [petId], references: [id])
+
+  @@index([petId])
+  @@map("daily")
+}
+
+model MedicalHistory{
+  id           Int      @id @default(autoincrement())
+  petId        Int      @map("pets_id")
+  medicalDate  DateTime @db.Date @map("medical_date")
+  veterinarian String?
+  diagnosis    String?
+  treatment    String?
+  prescription String?  // receita médica + medicamentos descritos
+
+  pet Pet @relation(fields: [petId], references: [id])
+
+  @@index([petId])
+  @@map("medicalHistory")
+}
+
+model Adoption{
+  id         Int            @id @default(autoincrement())
+  petId      Int            @map("pets_id")
+  adopterId  Int            @map("adopter_id")
+  startDate  DateTime       @db.Date @map("start_date")
+  endDate    DateTime?      @db.Date @map("end_date")
+  status     AdoptionStatus @default(ACTIVE)
+
+  pet     Pet     @relation(fields: [petId], references: [id])
+  adopter Adopter @relation(fields: [adopterId], references: [id])
+
+  @@index([petId])
+  @@index([adopterId])
+  @@map("adoption")
+}
