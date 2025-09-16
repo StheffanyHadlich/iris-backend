@@ -1,4 +1,4 @@
-# ÍRIS v0.1
+# ÍRIS v0.2
 
 **ÍRIS** is an open-source pet management system that allows you to register, track, and manage your pets.
 
@@ -14,9 +14,6 @@ Clone the repository and install the dependencies:
 # Clone repository
 $ git clone https://github.com/StheffanyHadlich/iris-foster-system.git
 
-# Acess diretory
-$ cd api
-
 # Initiate API
 $ npm run start:dev
 
@@ -25,14 +22,16 @@ $ npx prisma studio
 ```
 ---
 
-## DATABASE
-The database is responsible for storing information on:
-* Pets personal data
-* Medical history
-* Adoption processes
-* Adopter information
+## Database
 
-Technology used: PostgreSQL
+The project uses **PostgreSQL** as the database, managed with **Prisma ORM** and hosted in Docker Container.  
+The backend service (running locally at `http://localhost:3000`) communicates with the database through Prisma.  
+
+The database is responsible for storing and managing the following information:
+- **Pets personal data**  
+- **Medical history**  
+- **Adoption processes**  
+- **Adopter information**
 
 ---
 
@@ -111,7 +110,3 @@ Technology used: PostgreSQL
 * Pet - Adoption - Adopter > N:M
 
 ---
-
-## ERD - ENTITY-RELATIONSHOP DIAGRAM
-
-![Diagrama ER](./docs/der/der.png)
