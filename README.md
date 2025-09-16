@@ -110,3 +110,7 @@ The database is responsible for storing and managing the following information:
 * Pet - Adoption - Adopter > N:M
 
 ---
+
+📌 Related Repositories
+
+[Iris Frontend](https://github.com/StheffanyHadlich/iris-frontend) – REST API for managing pets, medical history, and adoption processes
