@@ -3,7 +3,7 @@ import { AuthService } from '../service/auth.service';
 import { LoginDto } from '../dto/login.dto';
 import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
 import { JwtPayload } from '../jwt/jwt-payload';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from './../../users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../auth.service';
+import { AuthService } from './auth.service';
 import { UsersService } from '../../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 
 describe('AuthService', () => {
