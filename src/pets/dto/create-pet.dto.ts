@@ -30,7 +30,11 @@ export class CreatePetDto {
   status?: PetStatus;
 
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: 'registrationDate deve ser em formato YYYY-MM-DD',
+    message: 'registrationDate must be in YYYY-MM-DD format',
   })
   registrationDate: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  userId?: number;
 }

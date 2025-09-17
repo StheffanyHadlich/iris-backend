@@ -19,13 +19,23 @@ export class PetsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Pet | null> {
-    return this.petsService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Pet> {
+    return this.petsService.getPet(+id);
+  }
+
+  @Get('user/:userId')
+  async findByUser(@Param('userId') userId: string): Promise<Pet[]> {
+    return this.petsService.getPetsByUser(+userId);
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto): Promise<Pet> {
     return this.petsService.update(+id, updatePetDto);
+  }
+
+  @Put(':id/assign/:userId')
+  async assignToUser(@Param('id') id: string, @Param('userId') userId: string): Promise<Pet> {
+    return this.petsService.assignPetToUser(+id, +userId);
   }
 
   @Delete(':id')
