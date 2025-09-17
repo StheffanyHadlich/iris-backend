@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { DailyService } from './daily.service';
-import { DailyController } from './daily.controller';
+import { DailyService } from './service/daily.service';
+import { DailyController } from './controller/daily.controller';
 
 @Module({
   providers: [DailyService],

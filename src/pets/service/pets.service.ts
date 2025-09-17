@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Pet } from '@prisma/client';
-import { PetsRepository } from './pets.repository';
-import { UsersRepository } from '../users/users.repository';
-import { CreatePetDto } from './dto/create-pet.dto';
-import { UpdatePetDto } from './dto/update-pet.dto';
+import { PetsRepository } from '../repository/pets.repository';
+import { UsersRepository } from '../../users/repository/users.repository';
+import { CreatePetDto } from '../dto/create-pet.dto';
+import { UpdatePetDto } from '../dto/update-pet.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

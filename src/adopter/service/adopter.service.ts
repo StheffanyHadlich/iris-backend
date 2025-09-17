@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { Prisma, Adopter } from '@prisma/client';
-import { CreateAdopterDto } from './dto/create-adopter.dto';
-import { UpdateAdopterDto } from './dto/update-adopter.dto';
+import { CreateAdopterDto } from '../dto/create-adopter.dto';
+import { UpdateAdopterDto } from '../dto/update-adopter.dto';
 
 @Injectable()
 export class AdopterService {
