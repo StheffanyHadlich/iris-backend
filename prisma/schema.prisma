@@ -42,6 +42,7 @@ model Pet {
   status          PetStatus @default(AVAILABLE)
   registrationDate DateTime @db.Date @map("registration_date")
 
+
   userId          Int?      @map("user_id")
   user            User?     @relation(fields: [userId], references: [id])
 
