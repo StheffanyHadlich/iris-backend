@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AdopterService } from './adopter.service';
-import { AdopterController } from './adopter.controller';
+import { AdopterService } from './service/adopter.service';
+import { AdopterController } from './controller/adopter.controller';
 
 @Module({
   providers: [AdopterService],

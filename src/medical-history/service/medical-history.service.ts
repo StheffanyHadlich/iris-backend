@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { Prisma, MedicalHistory } from '@prisma/client';
-import { CreateMedicalHistoryDto } from './dto/create-medical-history.dto';
-import { UpdateMedicalHistoryDto } from './dto/update-medical-history.dto';
+import { CreateMedicalHistoryDto } from '../dto/create-medical-history.dto';
+import { UpdateMedicalHistoryDto } from '../dto/update-medical-history.dto';
 
 @Injectable()
 export class MedicalHistoryService {

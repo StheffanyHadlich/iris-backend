@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { Prisma, Daily } from '@prisma/client';
-import { CreateDailyDto } from './dto/create-daily.dto';
-import { UpdateDailyDto } from './dto/update-daily.dto';
+import { CreateDailyDto } from '../dto/create-daily.dto';
+import { UpdateDailyDto } from '../dto/update-daily.dto';
 
 @Injectable()
 export class DailyService {
