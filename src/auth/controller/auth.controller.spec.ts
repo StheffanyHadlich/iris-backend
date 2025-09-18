@@ -24,7 +24,7 @@ describe('AuthController', () => {
   });
 
   it('should login successfully when credentials are valid', async () => {
-    // sucesso: usuário encontrado e senha correta
+    // success: username found and password correct
     authService.validateUser!.mockResolvedValue({ id: 1, username: 'test', email: 'test@test.com' });
     authService.login!.mockReturnValue({ access_token: 'jwt-token' });
 
@@ -35,7 +35,7 @@ describe('AuthController', () => {
   });
 
   it('should throw error when credentials are invalid', async () => {
-    // falha: validateUser retorna null porque email ou senha não batem
+    // failure: validateUser returns null because email or password do not match
     authService.validateUser!.mockResolvedValue(null);
 
     const dto: LoginDto = { email: 'wrong@test.com', password: 'wrong' };

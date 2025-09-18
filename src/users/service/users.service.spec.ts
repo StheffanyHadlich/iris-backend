@@ -24,7 +24,7 @@ describe('UsersService', () => {
   });
 
   it('should throw error if email exists', async () => {
-    // falha: não permite criar usuário se o email já estiver registrado
+    // failure: does not allow creating user if email is already registered
     (repo.findByEmail as jest.Mock).mockResolvedValue({ id: 1 });
 
     await expect(
@@ -33,7 +33,7 @@ describe('UsersService', () => {
   });
 
   it('should create a user without returning password', async () => {
-    // sucesso: cria usuário e garante que a senha não seja retornada na resposta
+    // success: creates user and ensures that the password is not returned in the response
     (repo.findByEmail as jest.Mock).mockResolvedValue(null);
     (repo.create as jest.Mock).mockImplementation((data) =>
       Promise.resolve({ ...data, id: 1, createdAt: new Date() })

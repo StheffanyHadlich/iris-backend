@@ -36,7 +36,7 @@ describe('PetsService', () => {
   });
 
   it('should create a pet without user', async () => {
-    // sucesso: cria um pet sem associar a nenhum usuário
+    // success: creates a pet without associating it with any user
     const dto = { name: 'Rex', age: 3, type: 'Dog', race: 'Labrador', registrationDate: new Date().toISOString() };
     (petsRepo.create as jest.Mock).mockResolvedValue({ id: 1, ...dto });
 
@@ -46,7 +46,7 @@ describe('PetsService', () => {
   });
 
   it('should throw NotFoundException if user does not exist when assigning', async () => {
-    // falha: tenta associar pet a um usuário inexistente, espera NotFoundException
+    // fail: Attempt to associate pet with non-existent user, expect NotFoundException
     (petsRepo.findById as jest.Mock).mockResolvedValue({ id: 1, userId: null });
     (usersRepo.findById as jest.Mock).mockResolvedValue(null);
 
@@ -54,7 +54,7 @@ describe('PetsService', () => {
   });
 
   it('should assign pet to user', async () => {
-    // sucesso: associa corretamente um pet a um usuário existente
+    // success: correctly associates a pet with an existing user
     const petData = { id: 1, userId: null };
     const userData = { id: 42 };
     (petsRepo.findById as jest.Mock).mockResolvedValue(petData);
@@ -67,7 +67,7 @@ describe('PetsService', () => {
   });
 
   it('should throw BadRequestException if pet already assigned to another user', async () => {
-    // falha: tenta associar pet que já está vinculado a outro usuário
+    // failure: attempts to associate a pet that is already linked to another user
     (petsRepo.findById as jest.Mock).mockResolvedValue({ id: 1, userId: 2 });
     (usersRepo.findById as jest.Mock).mockResolvedValue({ id: 3 });
 
@@ -75,13 +75,13 @@ describe('PetsService', () => {
   });
 
   it('should throw NotFoundException when updating non-existent pet', async () => {
-    // falha: tenta atualizar um pet que não existe, espera NotFoundException
+    // failure: tries to update a pet that doesn't exist, expects NotFoundException
     (petsRepo.findById as jest.Mock).mockResolvedValue(null);
     await expect(service.update(1, { name: 'New' })).rejects.toThrow(NotFoundException);
   });
 
   it('should remove a pet', async () => {
-    // sucesso: remove um pet existente
+    // success: removes an existing pet
     const pet = { id: 1 };
     (petsRepo.findById as jest.Mock).mockResolvedValue(pet);
     (petsRepo.delete as jest.Mock).mockResolvedValue(pet);
