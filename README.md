@@ -14,6 +14,15 @@ Clone the repository and install the dependencies:
 # Clone repository
 $ git clone https://github.com/StheffanyHadlich/iris-foster-system.git
 
+# Install dependencies
+$ npm install
+
+# Run Prisma migrations
+$ npx prisma migrate dev --name init
+
+# Generate Prisma client
+$ npx prisma generate
+
 # Initiate API
 $ npm run start:dev
 
