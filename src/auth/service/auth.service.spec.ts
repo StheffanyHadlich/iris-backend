@@ -32,7 +32,7 @@ describe('AuthService', () => {
   });
 
   it('should validate user with correct password', async () => {
-    // sucesso: senha fornecida corresponde ao hash armazenado
+    // success: provided password matches stored hash
     const password = await bcrypt.hash('123456', 10);
     usersService.findByEmail!.mockResolvedValue({
       id: 1,
@@ -47,7 +47,7 @@ describe('AuthService', () => {
   });
 
   it('should return null for invalid password', async () => {
-    // falha: bcrypt.compare falha porque senha não corresponde
+    // failure: bcrypt.compare fails because password does not match
     usersService.findByEmail!.mockResolvedValue({
       id: 1,
       email: 'test@test.com',
