@@ -4,6 +4,6 @@ import { AdopterController } from './adopter.controller';
 
 @Module({
   providers: [AdopterService],
-  controllers: [AdopterController]
+  controllers: [AdopterController],
 })
 export class AdopterModule {}

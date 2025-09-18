@@ -24,7 +24,9 @@ export class PetsService {
       age: dto.age,
       type: dto.type,
       race: dto.race,
-      currentWeight: dto.currentWeight ? new Prisma.Decimal(dto.currentWeight) : undefined,
+      currentWeight: dto.currentWeight
+        ? new Prisma.Decimal(dto.currentWeight)
+        : undefined,
       urlPhoto: dto.urlPhoto,
       status: dto.status ?? 'AVAILABLE',
       registrationDate: new Date(dto.registrationDate),
@@ -39,10 +41,14 @@ export class PetsService {
       age: dto.age,
       type: dto.type,
       race: dto.race,
-      currentWeight: dto.currentWeight ? new Prisma.Decimal(dto.currentWeight) : undefined,
+      currentWeight: dto.currentWeight
+        ? new Prisma.Decimal(dto.currentWeight)
+        : undefined,
       urlPhoto: dto.urlPhoto,
       status: dto.status,
-      registrationDate: dto.registrationDate ? new Date(dto.registrationDate) : undefined,
+      registrationDate: dto.registrationDate
+        ? new Date(dto.registrationDate)
+        : undefined,
     };
 
     return this.prisma.pet.update({

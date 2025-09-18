@@ -4,6 +4,6 @@ import { AdoptionController } from './adoption.controller';
 
 @Module({
   providers: [AdoptionService],
-  controllers: [AdoptionController]
+  controllers: [AdoptionController],
 })
 export class AdoptionModule {}

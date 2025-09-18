@@ -29,7 +29,10 @@ export class MedicalHistoryService {
     return this.prisma.medicalHistory.findUnique({ where: { id } });
   }
 
-  async update(id: number, dto: UpdateMedicalHistoryDto): Promise<MedicalHistory> {
+  async update(
+    id: number,
+    dto: UpdateMedicalHistoryDto,
+  ): Promise<MedicalHistory> {
     const data: Prisma.MedicalHistoryUpdateInput = {
       medicalDate: dto.medicalDate ? new Date(dto.medicalDate) : undefined,
       veterinarian: dto.veterinarian,

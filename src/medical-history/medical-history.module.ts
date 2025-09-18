@@ -4,6 +4,6 @@ import { MedicalHistoryController } from './medical-history.controller';
 
 @Module({
   providers: [MedicalHistoryService],
-  controllers: [MedicalHistoryController]
+  controllers: [MedicalHistoryController],
 })
 export class MedicalHistoryModule {}

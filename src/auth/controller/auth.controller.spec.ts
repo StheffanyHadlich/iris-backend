@@ -25,7 +25,11 @@ describe('AuthController', () => {
 
   it('should login successfully when credentials are valid', async () => {
     // sucesso: usuário encontrado e senha correta
-    authService.validateUser!.mockResolvedValue({ id: 1, username: 'test', email: 'test@test.com' });
+    authService.validateUser!.mockResolvedValue({
+      id: 1,
+      username: 'test',
+      email: 'test@test.com',
+    });
     authService.login!.mockReturnValue({ access_token: 'jwt-token' });
 
     const dto: LoginDto = { email: 'test@test.com', password: '123456' };
@@ -45,7 +49,11 @@ describe('AuthController', () => {
   it('should register user and return jwt token', async () => {
     authService.register!.mockResolvedValue({ access_token: 'jwt-token' });
 
-    const dto: CreateUserDto = { username: 'newuser', email: 'new@test.com', password: '123456' };
+    const dto: CreateUserDto = {
+      username: 'newuser',
+      email: 'new@test.com',
+      password: '123456',
+    };
     const result = await controller.register(dto);
 
     expect(result).toEqual({ access_token: 'jwt-token' });

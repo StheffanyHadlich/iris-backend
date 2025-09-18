@@ -4,6 +4,6 @@ import { DailyController } from './daily.controller';
 
 @Module({
   providers: [DailyService],
-  controllers: [DailyController]
+  controllers: [DailyController],
 })
 export class DailyModule {}

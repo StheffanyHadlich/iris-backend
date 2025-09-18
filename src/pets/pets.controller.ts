@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { PetsService } from './pets.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
@@ -24,7 +32,10 @@ export class PetsController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto): Promise<Pet> {
+  async update(
+    @Param('id') id: string,
+    @Body() updatePetDto: UpdatePetDto,
+  ): Promise<Pet> {
     return this.petsService.update(+id, updatePetDto);
   }
 

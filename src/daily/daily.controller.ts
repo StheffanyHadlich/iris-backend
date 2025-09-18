@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { DailyService } from './daily.service';
 import { CreateDailyDto } from './dto/create-daily.dto';
 import { UpdateDailyDto } from './dto/update-daily.dto';
