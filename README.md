@@ -17,6 +17,9 @@ $ git clone https://github.com/StheffanyHadlich/iris-foster-system.git
 # Install dependencies
 $ npm install
 
+# Start database container
+$ docker-compose up -d
+
 # Run Prisma migrations
 $ npx prisma migrate dev --name init
 
