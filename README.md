@@ -27,7 +27,7 @@ $ npx prisma migrate dev --name init
 $ npx prisma generate
 
 # Initiate API
-$ npm run start:dev
+$ npm run dev
 
 # Visualize db tables
 $ npx prisma studio
