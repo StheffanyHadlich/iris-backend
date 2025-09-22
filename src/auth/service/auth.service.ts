@@ -23,14 +23,18 @@ export class AuthService {
     return safe;
   }
 
-  async login (user: Omit<User, 'password'>) {
-    const payload = { username: user.username, sub: user.id, email: user.email };
+  async login(user: Omit<User, 'password'>) {
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      email: user.email,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
 
-  async register (dto: CreateUserDto) {
+  async register(dto: CreateUserDto) {
     const user = await this.usersService.create(dto);
     return this.login(user);
   }

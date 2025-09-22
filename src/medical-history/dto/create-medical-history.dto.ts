@@ -3,11 +3,11 @@ import { Type, Transform } from 'class-transformer';
 
 export class CreateMedicalHistoryDto {
   @IsInt()
-  @Type(() => Number) 
+  @Type(() => Number)
   petId: number;
 
   @IsDateString()
-  @Transform(({ value }) => value ? new Date(value) : undefined) 
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
   medicalDate: Date;
 
   @IsOptional()

@@ -45,7 +45,11 @@ describe('AuthController', () => {
   it('should register user and return jwt token', async () => {
     authService.register!.mockResolvedValue({ access_token: 'jwt-token' });
 
-    const dto: CreateUserDto = { username: 'newuser', email: 'new@test.com', password: '123456' };
+    const dto: CreateUserDto = {
+      username: 'newuser',
+      email: 'new@test.com',
+      password: '123456',
+    };
     const result = await controller.register(dto);
 
     expect(result).toEqual({ access_token: 'jwt-token' });

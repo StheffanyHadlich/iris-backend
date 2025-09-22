@@ -18,7 +18,7 @@ export class CreatePetDto {
   race?: string;
 
   @IsOptional()
-  @Transform(({ value }) => value !== undefined ? String(value) : undefined)
+  @Transform(({ value }) => (value !== undefined ? String(value) : undefined))
   currentWeight?: string;
 
   @IsOptional()
