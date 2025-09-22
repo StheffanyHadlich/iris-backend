@@ -1,8 +1,8 @@
 # ÍRIS v0.2
 
-**ÍRIS** is an open-source pet management system that allows you to register, track, and manage your pets.
+**ÍRIS** is an open-source pet management system that allows you to register, track, and manage your pets. It is currently under development and will have adoption features, medical history, daily tracking, and more in the future!
 
-It is currently under development and will have adoption features, medical history, daily tracking, and more in the future!
+This repository only contains the back-end structure of the application - the repository containing the front-end is the following: https://github.com/StheffanyHadlich/iris-frontend
 
 ---
 
