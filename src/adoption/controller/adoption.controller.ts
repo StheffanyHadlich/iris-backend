@@ -1,3 +1,9 @@
+<<<<<<< HEAD:src/adoption/controller/adoption.controller.ts
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { AdoptionService } from '../service/adoption.service';
+import { CreateAdoptionDto } from '../dto/create-adoption.dto';
+import { UpdateAdoptionDto } from '../dto/update-adoption.dto';
+=======
 import {
   Controller,
   Get,
@@ -10,6 +16,7 @@ import {
 import { AdoptionService } from './adoption.service';
 import { CreateAdoptionDto } from './dto/create-adoption.dto';
 import { UpdateAdoptionDto } from './dto/update-adoption.dto';
+>>>>>>> main:src/adoption/adoption.controller.ts
 
 @Controller('adoption')
 export class AdoptionController {

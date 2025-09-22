@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PetsService } from './pets.service';
-import { PetsController } from './pets.controller';
-import { PetsRepository } from './pets.repository';
+import { PetsService } from './service/pets.service';
+import { PetsController } from './controller/pets.controller';
+import { PetsRepository } from './repository/pets.repository';
 import { PrismaModule } from '../prisma.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, UsersModule],
   controllers: [PetsController],
   providers: [PetsService, PetsRepository],
   exports: [PetsRepository],
