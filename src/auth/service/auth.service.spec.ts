@@ -48,6 +48,7 @@ describe('AuthService', () => {
 
   it('should return null for invalid password', async () => {
     // failure: bcrypt.compare failed because password did not match
+
     usersService.findByEmail!.mockResolvedValue({
       id: 1,
       email: 'test@test.com',
