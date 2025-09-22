@@ -1,22 +1,7 @@
-<<<<<<< HEAD:src/pets/controller/pets.controller.ts
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { PetsService } from '../service/pets.service';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { UpdatePetDto } from '../dto/update-pet.dto';
-=======
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-} from '@nestjs/common';
-import { PetsService } from './pets.service';
-import { CreatePetDto } from './dto/create-pet.dto';
-import { UpdatePetDto } from './dto/update-pet.dto';
->>>>>>> main:src/pets/pets.controller.ts
 import { Pet } from '@prisma/client';
 
 @Controller('pets')
