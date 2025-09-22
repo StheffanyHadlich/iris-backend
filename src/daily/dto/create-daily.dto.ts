@@ -11,7 +11,7 @@ export class CreateDailyDto {
   dailyDate: Date;
 
   @IsOptional()
-  @Transform(({ value }) => value ? parseFloat(value) : undefined)
+  @Transform(({ value }) => (value ? parseFloat(value) : undefined))
   weight?: number;
 
   @IsOptional()
