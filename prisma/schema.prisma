@@ -13,37 +13,38 @@ enum PetStatus {
   UNDER_TREATMENT
 }
 
-enum AdoptionStatus{
+enum AdoptionStatus {
   ACTIVE
   COMPLETED
   CANCELED
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  username   String
-  email      String   @unique
-  password   String
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
 
-  pets       Pet[]
+  pets   Pet[]
+  tokens RefreshToken[]
 
   @@map("user")
 }
 
 model Pet {
-  id              Int       @id @default(autoincrement())
-  name            String
-  age             Int
-  type            String
-  race            String?
-  currentWeight   Decimal?  @db.Decimal(10,2)
-  urlPhoto        String?   @map("url_photo")
-  status          PetStatus @default(AVAILABLE)
-  registrationDate DateTime @db.Date @map("registration_date")
+  id               Int       @id @default(autoincrement())
+  name             String
+  age              Int
+  type             String
+  race             String?
+  currentWeight    Decimal?  @db.Decimal(10, 2)
+  urlPhoto         String?   @map("url_photo")
+  status           PetStatus @default(AVAILABLE)
+  registrationDate DateTime  @map("registration_date") @db.Date
 
-  userId          Int?      @map("user_id")
-  user            User?     @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+  user   User? @relation(fields: [userId], references: [id])
 
   diaries          Daily[]
   medicalHistories MedicalHistory[]
@@ -66,12 +67,12 @@ model Adopter {
 }
 
 model Daily {
-  id             Int      @id @default(autoincrement())
-  petId          Int      @map("pets_id")
-  dailyDate      DateTime @db.Date @map("daily_date")
-  weight         Decimal? @db.Decimal(10,2)
-  notes          String?
-  prescriptionNotes String? @map("prescription_notes")
+  id                Int      @id @default(autoincrement())
+  petId             Int      @map("pets_id")
+  dailyDate         DateTime @map("daily_date") @db.Date
+  weight            Decimal? @db.Decimal(10, 2)
+  notes             String?
+  prescriptionNotes String?  @map("prescription_notes")
 
   pet Pet @relation(fields: [petId], references: [id])
 
@@ -79,14 +80,14 @@ model Daily {
   @@map("daily")
 }
 
-model MedicalHistory{
+model MedicalHistory {
   id           Int      @id @default(autoincrement())
   petId        Int      @map("pets_id")
-  medicalDate  DateTime @db.Date @map("medical_date")
+  medicalDate  DateTime @map("medical_date") @db.Date
   veterinarian String?
   diagnosis    String?
   treatment    String?
-  prescription String?  // receita médica + medicamentos descritos
+  prescription String? // receita médica + medicamentos descritos
 
   pet Pet @relation(fields: [petId], references: [id])
 
@@ -94,13 +95,13 @@ model MedicalHistory{
   @@map("medicalHistory")
 }
 
-model Adoption{
-  id         Int            @id @default(autoincrement())
-  petId      Int            @map("pets_id")
-  adopterId  Int            @map("adopter_id")
-  startDate  DateTime       @db.Date @map("start_date")
-  endDate    DateTime?      @db.Date @map("end_date")
-  status     AdoptionStatus @default(ACTIVE)
+model Adoption {
+  id        Int            @id @default(autoincrement())
+  petId     Int            @map("pets_id")
+  adopterId Int            @map("adopter_id")
+  startDate DateTime       @map("start_date") @db.Date
+  endDate   DateTime?      @map("end_date") @db.Date
+  status    AdoptionStatus @default(ACTIVE)
 
   pet     Pet     @relation(fields: [petId], references: [id])
   adopter Adopter @relation(fields: [adopterId], references: [id])
@@ -108,4 +109,17 @@ model Adoption{
   @@index([petId])
   @@index([adopterId])
   @@map("adoption")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String // hashed secret
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+  revoked   Boolean  @default(false)
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }
