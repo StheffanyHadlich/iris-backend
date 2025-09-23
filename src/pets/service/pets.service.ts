@@ -4,6 +4,7 @@ import { PetsRepository } from '../repository/pets.repository';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { UpdatePetDto } from '../dto/update-pet.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PetsService {
@@ -52,6 +53,7 @@ export class PetsService {
     userId: number,
     authUserId?: number,
   ): Promise<Pet> {
+
     const pet = await this.petsRepository.findById(petId);
     if (!pet) throw new NotFoundException(`Pet with id ${petId} not found`);
 

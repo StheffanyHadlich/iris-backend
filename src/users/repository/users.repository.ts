@@ -40,7 +40,6 @@ export class UsersRepository {
     });
   }
 
-
   async update(
     id: number,
     data: Prisma.UserUpdateInput,
