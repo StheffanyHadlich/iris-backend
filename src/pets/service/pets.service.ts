@@ -1,4 +1,9 @@
-import {Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Pet, Prisma } from '@prisma/client';
 import { PetsRepository } from '../repository/pets.repository';
 import { UsersRepository } from '../../users/repository/users.repository';
@@ -27,7 +32,8 @@ export class PetsService {
 
     if (finalUserId) {
       const user = await this.usersRepository.findById(finalUserId);
-      if (!user) throw new NotFoundException(`User with id ${finalUserId} not found`);
+      if (!user)
+        throw new NotFoundException(`User with id ${finalUserId} not found`);
     }
 
     const data: Prisma.PetCreateInput = {
@@ -53,7 +59,6 @@ export class PetsService {
     userId: number,
     authUserId?: number,
   ): Promise<Pet> {
-
     const pet = await this.petsRepository.findById(petId);
     if (!pet) throw new NotFoundException(`Pet with id ${petId} not found`);
 
@@ -97,7 +102,11 @@ export class PetsService {
     return this.petsRepository.findAll();
   }
 
-  async update(id: number, dto: UpdatePetDto, authUserId?: number): Promise<Pet> {
+  async update(
+    id: number,
+    dto: UpdatePetDto,
+    authUserId?: number,
+  ): Promise<Pet> {
     const pet = await this.petsRepository.findById(id);
     if (!pet) throw new NotFoundException(`Pet with id ${id} not found`);
 
@@ -116,7 +125,9 @@ export class PetsService {
           : undefined,
       urlPhoto: dto.urlPhoto ?? undefined,
       status: dto.status ?? undefined,
-      registrationDate: dto.registrationDate ? new Date(dto.registrationDate) : undefined,
+      registrationDate: dto.registrationDate
+        ? new Date(dto.registrationDate)
+        : undefined,
     };
 
     return this.petsRepository.update(id, data);

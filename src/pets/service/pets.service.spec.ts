@@ -37,11 +37,19 @@ describe('PetsService', () => {
 
   it('should create a pet without user', async () => {
     // success: creates a pet without associating it with any user
-    const dto = { name: 'Rex', age: 3, type: 'Dog', race: 'Labrador', registrationDate: new Date().toISOString() };
+    const dto = {
+      name: 'Rex',
+      age: 3,
+      type: 'Dog',
+      race: 'Labrador',
+      registrationDate: new Date().toISOString(),
+    };
     (petsRepo.create as jest.Mock).mockResolvedValue({ id: 1, ...dto });
 
     const pet = await service.create(dto);
-    expect(petsRepo.create).toHaveBeenCalledWith(expect.objectContaining({ name: 'Rex' }));
+    expect(petsRepo.create).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'Rex' }),
+    );
     expect(pet.id).toBe(1);
   });
 
@@ -50,7 +58,9 @@ describe('PetsService', () => {
     (petsRepo.findById as jest.Mock).mockResolvedValue({ id: 1, userId: null });
     (usersRepo.findById as jest.Mock).mockResolvedValue(null);
 
-    await expect(service.assignPetToUser(1, 42)).rejects.toThrow(NotFoundException);
+    await expect(service.assignPetToUser(1, 42)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('should assign pet to user', async () => {
@@ -59,7 +69,10 @@ describe('PetsService', () => {
     const userData = { id: 42 };
     (petsRepo.findById as jest.Mock).mockResolvedValue(petData);
     (usersRepo.findById as jest.Mock).mockResolvedValue(userData);
-    (petsRepo.assignToUser as jest.Mock).mockResolvedValue({ ...petData, userId: 42 });
+    (petsRepo.assignToUser as jest.Mock).mockResolvedValue({
+      ...petData,
+      userId: 42,
+    });
 
     const pet = await service.assignPetToUser(1, 42);
     expect(petsRepo.assignToUser).toHaveBeenCalledWith(1, 42);
@@ -71,13 +84,17 @@ describe('PetsService', () => {
     (petsRepo.findById as jest.Mock).mockResolvedValue({ id: 1, userId: 2 });
     (usersRepo.findById as jest.Mock).mockResolvedValue({ id: 3 });
 
-    await expect(service.assignPetToUser(1, 3)).rejects.toThrow(BadRequestException);
+    await expect(service.assignPetToUser(1, 3)).rejects.toThrow(
+      BadRequestException,
+    );
   });
 
   it('should throw NotFoundException when updating non-existent pet', async () => {
     // failure: tries to update a pet that doesn't exist, expects NotFoundException
     (petsRepo.findById as jest.Mock).mockResolvedValue(null);
-    await expect(service.update(1, { name: 'New' })).rejects.toThrow(NotFoundException);
+    await expect(service.update(1, { name: 'New' })).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('should remove a pet', async () => {

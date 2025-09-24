@@ -14,10 +14,7 @@ describe('UsersService', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UsersService,
-        { provide: UsersRepository, useValue: repo },
-      ],
+      providers: [UsersService, { provide: UsersRepository, useValue: repo }],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
@@ -28,7 +25,7 @@ describe('UsersService', () => {
     (repo.findByEmail as jest.Mock).mockResolvedValue({ id: 1 });
 
     await expect(
-      service.create({ username: 'x', email: 'a@b.com', password: '123' })
+      service.create({ username: 'x', email: 'a@b.com', password: '123' }),
     ).rejects.toThrow(BadRequestException);
   });
 
@@ -36,7 +33,7 @@ describe('UsersService', () => {
     // success: creates user and ensures that the password is not returned in the response
     (repo.findByEmail as jest.Mock).mockResolvedValue(null);
     (repo.create as jest.Mock).mockImplementation((data) =>
-      Promise.resolve({ ...data, id: 1, createdAt: new Date() })
+      Promise.resolve({ ...data, id: 1, createdAt: new Date() }),
     );
 
     const user = await service.create({

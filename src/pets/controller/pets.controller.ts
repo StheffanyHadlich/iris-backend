@@ -1,10 +1,29 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Req, UseGuards, ForbiddenException, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  Req,
+  UseGuards,
+  ForbiddenException,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { PetsService } from '../service/pets.service';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { UpdatePetDto } from '../dto/update-pet.dto';
 import { Pet } from '@prisma/client';
 import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 
 type ReqWithUser = {
   user: {
@@ -22,10 +41,15 @@ export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new pet (associates to authenticated user).' })
+  @ApiOperation({
+    summary: 'Create a new pet (associates to authenticated user).',
+  })
   @ApiBody({ type: CreatePetDto })
   @ApiResponse({ status: 201, description: 'Pet created.' })
-  @ApiResponse({ status: 403, description: 'Forbidden (cannot assign pet to other user).' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden (cannot assign pet to other user).',
+  })
   async create(
     @Body() createPetDto: CreatePetDto,
     @Req() req: ReqWithUser,
@@ -47,7 +71,9 @@ export class PetsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get single pet by id (only if owned by authenticated user).' })
+  @ApiOperation({
+    summary: 'Get single pet by id (only if owned by authenticated user).',
+  })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Pet found.' })
   @ApiResponse({ status: 403, description: 'Forbidden (not the owner).' })
@@ -73,7 +99,9 @@ export class PetsController {
   }
 
   @Put(':id/assign/:userId')
-  @ApiOperation({ summary: 'Assign existing pet to a user (owner only or same user).' })
+  @ApiOperation({
+    summary: 'Assign existing pet to a user (owner only or same user).',
+  })
   @ApiParam({ name: 'id', type: Number })
   @ApiParam({ name: 'userId', type: Number })
   async assignToUser(

@@ -17,7 +17,9 @@ async function bootstrap() {
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Pet Management API')
-    .setDescription('API for managing users and their pets. Includes authentication and authorization with JWT.')
+    .setDescription(
+      'API for managing users and their pets. Includes authentication and authorization with JWT.',
+    )
     .setVersion('1.0')
     .addBearerAuth() // JWT auth
     .build();

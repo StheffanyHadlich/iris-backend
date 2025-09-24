@@ -72,7 +72,9 @@ describe('PetsController', () => {
     } as any;
     service.create.mockResolvedValue(mockPet);
 
-    const result = await controller.create(dto, { user: { id: 1, username: 'u', email: 'e' } } as any);
+    const result = await controller.create(dto, {
+      user: { id: 1, username: 'u', email: 'e' },
+    } as any);
     expect(result).toEqual(mockPet);
     expect(service.create).toHaveBeenCalledWith(dto, 1);
   });
@@ -80,7 +82,9 @@ describe('PetsController', () => {
   // lists pets for authenticated user
   it('should get pets for the authenticated user', async () => {
     service.getPetsByUser.mockResolvedValue([mockPet]);
-    const result = await controller.findAll({ user: { id: 1, username: 'u', email: 'e' } } as any);
+    const result = await controller.findAll({
+      user: { id: 1, username: 'u', email: 'e' },
+    } as any);
     expect(result).toEqual([mockPet]);
     expect(service.getPetsByUser).toHaveBeenCalledWith(1);
   });
@@ -88,7 +92,9 @@ describe('PetsController', () => {
   // retrieves a single pet (owner)
   it('should get a pet by id for owner', async () => {
     service.getPet.mockResolvedValue(mockPet);
-    const result = await controller.findOne(1, { user: { id: 1, username: 'u', email: 'e' } } as any);
+    const result = await controller.findOne(1, {
+      user: { id: 1, username: 'u', email: 'e' },
+    } as any);
     expect(result).toEqual(mockPet);
     expect(service.getPet).toHaveBeenCalledWith(1, 1);
   });
@@ -97,7 +103,9 @@ describe('PetsController', () => {
   it('should update a pet when authenticated user is owner', async () => {
     const dto: UpdatePetDto = { name: 'Updated' } as any;
     service.update.mockResolvedValue({ ...mockPet, name: 'Updated' });
-    const result = await controller.update(1, dto, { user: { id: 1, username: 'u', email: 'e' } } as any);
+    const result = await controller.update(1, dto, {
+      user: { id: 1, username: 'u', email: 'e' },
+    } as any);
     expect(result.name).toBe('Updated');
     expect(service.update).toHaveBeenCalledWith(1, dto, 1);
   });
@@ -105,7 +113,9 @@ describe('PetsController', () => {
   // assign to same user allowed
   it('should assign pet to the authenticated user', async () => {
     service.assignPetToUser.mockResolvedValue(mockPet);
-    const result = await controller.assignToUser(1, 1, { user: { id: 1, username: 'u', email: 'e' } } as any);
+    const result = await controller.assignToUser(1, 1, {
+      user: { id: 1, username: 'u', email: 'e' },
+    } as any);
     expect(result).toEqual(mockPet);
     expect(service.assignPetToUser).toHaveBeenCalledWith(1, 1, 1);
   });
@@ -113,7 +123,9 @@ describe('PetsController', () => {
   // delete succeeds when owner
   it('should remove a pet when owner', async () => {
     service.remove.mockResolvedValue(mockPet);
-    const result = await controller.remove(1, { user: { id: 1, username: 'u', email: 'e' } } as any);
+    const result = await controller.remove(1, {
+      user: { id: 1, username: 'u', email: 'e' },
+    } as any);
     expect(result).toEqual(mockPet);
     expect(service.remove).toHaveBeenCalledWith(1, 1);
   });
@@ -121,16 +133,22 @@ describe('PetsController', () => {
   // authorization failure: attempt to assign to another user should be forbidden by controller before calling service
   it('should throw ForbiddenException when trying to assign to another user', async () => {
     await expect(
-      controller.assignToUser(1, 2, { user: { id: 1, username: 'u', email: 'e' } } as any),
+      controller.assignToUser(1, 2, {
+        user: { id: 1, username: 'u', email: 'e' },
+      } as any),
     ).rejects.toThrow(ForbiddenException);
   });
 
   // simulate service-level ForbiddenException for update if service enforces it
   it('should bubble up ForbiddenException from service when updating non-owned pet', async () => {
     const dto: UpdatePetDto = { name: 'Updated' } as any;
-    service.update.mockRejectedValue(new ForbiddenException('Not authorized to update this pet.'));
+    service.update.mockRejectedValue(
+      new ForbiddenException('Not authorized to update this pet.'),
+    );
     await expect(
-      controller.update(1, dto, { user: { id: 1, username: 'u', email: 'e' } } as any),
+      controller.update(1, dto, {
+        user: { id: 1, username: 'u', email: 'e' },
+      } as any),
     ).rejects.toThrow(ForbiddenException);
   });
 });
