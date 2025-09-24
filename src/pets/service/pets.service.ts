@@ -1,10 +1,9 @@
-import {Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Pet, Prisma } from '@prisma/client';
 import { PetsRepository } from '../repository/pets.repository';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { UpdatePetDto } from '../dto/update-pet.dto';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PetsService {
@@ -13,22 +12,13 @@ export class PetsService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async create(dto: CreatePetDto, authUserId?: number): Promise<Pet> {
-    let finalUserId: number | undefined = undefined;
-
-    if (dto.userId !== undefined && dto.userId !== null) {
-      finalUserId = dto.userId;
-      if (authUserId && finalUserId !== authUserId) {
-        throw new ForbiddenException('Cannot create pet for another user.');
-      }
-    } else if (authUserId) {
-      finalUserId = authUserId;
+  async create(dto: CreatePetDto, authUserId: number): Promise<Pet> {
+    if (!authUserId) {
+      throw new BadRequestException('Authenticated user id is required to create a pet.');
     }
 
-    if (finalUserId) {
-      const user = await this.usersRepository.findById(finalUserId);
-      if (!user) throw new NotFoundException(`User with id ${finalUserId} not found`);
-    }
+    const user = await this.usersRepository.findById(authUserId);
+    if (!user) throw new NotFoundException(`User with id ${authUserId} not found`);
 
     const data: Prisma.PetCreateInput = {
       name: dto.name,
@@ -42,7 +32,7 @@ export class PetsService {
       urlPhoto: dto.urlPhoto ?? undefined,
       status: dto.status ?? undefined,
       registrationDate: new Date(dto.registrationDate),
-      user: finalUserId ? { connect: { id: finalUserId } } : undefined,
+      user: { connect: { id: authUserId } },
     };
 
     return this.petsRepository.create(data);
@@ -53,7 +43,6 @@ export class PetsService {
     userId: number,
     authUserId?: number,
   ): Promise<Pet> {
-
     const pet = await this.petsRepository.findById(petId);
     if (!pet) throw new NotFoundException(`Pet with id ${petId} not found`);
 

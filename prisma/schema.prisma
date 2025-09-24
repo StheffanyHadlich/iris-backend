@@ -43,8 +43,8 @@ model Pet {
   status           PetStatus @default(AVAILABLE)
   registrationDate DateTime  @map("registration_date") @db.Date
 
-  userId Int?  @map("user_id")
-  user   User? @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
 
   diaries          Daily[]
   medicalHistories MedicalHistory[]
@@ -87,7 +87,7 @@ model MedicalHistory {
   veterinarian String?
   diagnosis    String?
   treatment    String?
-  prescription String? // receita médica + medicamentos descritos
+  prescription String?
 
   pet Pet @relation(fields: [petId], references: [id])
 
@@ -113,7 +113,7 @@ model Adoption {
 
 model RefreshToken {
   id        Int      @id @default(autoincrement())
-  token     String // hashed secret
+  token     String
   user      User     @relation(fields: [userId], references: [id])
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")

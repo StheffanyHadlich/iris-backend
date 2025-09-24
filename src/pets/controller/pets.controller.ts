@@ -25,16 +25,11 @@ export class PetsController {
   @ApiOperation({ summary: 'Create a new pet (associates to authenticated user).' })
   @ApiBody({ type: CreatePetDto })
   @ApiResponse({ status: 201, description: 'Pet created.' })
-  @ApiResponse({ status: 403, description: 'Forbidden (cannot assign pet to other user).' })
   async create(
     @Body() createPetDto: CreatePetDto,
     @Req() req: ReqWithUser,
   ): Promise<Pet> {
     const authUserId = req.user.id;
-    if (createPetDto.userId && createPetDto.userId !== authUserId) {
-      throw new ForbiddenException('Cannot create pet for another user.');
-    }
-
     return this.petsService.create(createPetDto, authUserId);
   }
 
@@ -50,7 +45,6 @@ export class PetsController {
   @ApiOperation({ summary: 'Get single pet by id (only if owned by authenticated user).' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Pet found.' })
-  @ApiResponse({ status: 403, description: 'Forbidden (not the owner).' })
   async findOne(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: ReqWithUser,

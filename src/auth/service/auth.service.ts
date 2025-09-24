@@ -10,8 +10,6 @@ import { randomBytes } from 'crypto';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-
-  // refresh tokens expire in 7 days
   private readonly refreshTokenTtlMs = 7 * 24 * 60 * 60 * 1000;
 
   constructor(
@@ -20,7 +18,6 @@ export class AuthService {
     private refreshTokenRepo: RefreshTokenRepository,
   ) {}
 
-  // validate user credentials
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) return null;
@@ -32,7 +29,6 @@ export class AuthService {
     return safeUser;
   }
 
-  // login user and generate access + refresh tokens
   async login(user: Omit<User, 'password'>) {
     const payload = {
       username: user.username,
@@ -57,7 +53,6 @@ export class AuthService {
     return this.login(user);
   }
 
-  // generate a strong, one-time-use refresh token
   private async createRefreshTokenForUser(userId: number): Promise<string> {
     const secret = randomBytes(64).toString('hex'); 
     const hashed = await bcrypt.hash(secret, 12); 
@@ -74,7 +69,6 @@ export class AuthService {
     return `${record.id}.${secret}`;
   }
 
-  // refresh access token using a refresh token
   async refresh(refreshTokenString: string) {
     if (!refreshTokenString) throw new UnauthorizedException('Refresh token missing');
 
@@ -98,13 +92,11 @@ export class AuthService {
     const user = await this.usersService.findById(record.userId);
     if (!user) throw new UnauthorizedException('User not found');
 
-    // rotate token: revoke current and issue new one
     await this.refreshTokenRepo.revoke(record.id);
 
     return this.login({ ...user, password: undefined } as Omit<User, 'password'>);
   }
 
-  // revoke a refresh token manually
   async logout(refreshTokenString: string) {
     if (!refreshTokenString) return;
 

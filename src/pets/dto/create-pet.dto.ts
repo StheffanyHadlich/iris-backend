@@ -33,8 +33,4 @@ export class CreatePetDto {
     message: 'registrationDate must be in YYYY-MM-DD format',
   })
   registrationDate: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  userId?: number;
 }

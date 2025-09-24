@@ -8,24 +8,23 @@ async function bootstrap() {
   const WEBSITE_URL = 'http://localhost:3001';
 
   app.enableCors({
-    origin: WEBSITE_URL, // frontend URL
-    credentials: true, // allow cookies
+    origin: WEBSITE_URL,
+    credentials: true,
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Pet Management API')
     .setDescription('API for managing users and their pets. Includes authentication and authorization with JWT.')
     .setVersion('1.0')
-    .addBearerAuth() // JWT auth
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
     swaggerOptions: {
-      persistAuthorization: true, // keep auth info on page reload
+      persistAuthorization: true,
     },
   });
 
