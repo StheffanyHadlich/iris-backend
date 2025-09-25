@@ -42,9 +42,7 @@ export class AuthService {
       email: user.email,
     };
 
-    const accessToken = this.jwtService.sign(payload, {
-      subject: String(user.id),
-    });
+    const accessToken = this.jwtService.sign(payload);
 
     const refreshToken = await this.createRefreshTokenForUser(user.id);
 
