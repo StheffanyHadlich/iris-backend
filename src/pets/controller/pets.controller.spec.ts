@@ -62,8 +62,10 @@ describe('PetsController', () => {
     expect(controller).toBeDefined();
   });
 
-  // creates a pet for the authenticated user
+
   it('should create a pet associated with the authenticated user', async () => {
+    // failure: this test fails if the service.create is not called with the authenticated userId
+    // success: if successful, the created pet is linked to the authenticated user
     const dto: CreatePetDto = {
       name: 'Bobby',
       age: 3,
@@ -72,83 +74,73 @@ describe('PetsController', () => {
     } as any;
     service.create.mockResolvedValue(mockPet);
 
-    const result = await controller.create(dto, {
-      user: { id: 1, username: 'u', email: 'e' },
-    } as any);
+    const result = await controller.create(dto, { user: { id: 1 } } as any);
     expect(result).toEqual(mockPet);
     expect(service.create).toHaveBeenCalledWith(dto, 1);
   });
 
-  // lists pets for authenticated user
   it('should get pets for the authenticated user', async () => {
+    // failure: this test fails if service.getPetsByUser is not called with the authenticated userId
+    // success: if successful, returns only the pets owned by the authenticated user
     service.getPetsByUser.mockResolvedValue([mockPet]);
-    const result = await controller.findAll({
-      user: { id: 1, username: 'u', email: 'e' },
-    } as any);
+    const result = await controller.findAll({ user: { id: 1 } } as any);
     expect(result).toEqual([mockPet]);
     expect(service.getPetsByUser).toHaveBeenCalledWith(1);
   });
 
-  // retrieves a single pet (owner)
   it('should get a pet by id for owner', async () => {
+    // failure: this test fails if service.getPet is not called with the correct petId and userId
+    // success: if successful, returns the requested pet belonging to the authenticated user
     service.getPet.mockResolvedValue(mockPet);
-    const result = await controller.findOne(1, {
-      user: { id: 1, username: 'u', email: 'e' },
-    } as any);
+    const result = await controller.findOne(1, { user: { id: 1 } } as any);
     expect(result).toEqual(mockPet);
     expect(service.getPet).toHaveBeenCalledWith(1, 1);
   });
 
-  // update succeeds when owner
   it('should update a pet when authenticated user is owner', async () => {
+    // failure: this test fails if the pet cannot be updated because it is not owned by the authenticated user
+    // success: if successful, returns the updated pet with new values
     const dto: UpdatePetDto = { name: 'Updated' } as any;
     service.update.mockResolvedValue({ ...mockPet, name: 'Updated' });
-    const result = await controller.update(1, dto, {
-      user: { id: 1, username: 'u', email: 'e' },
-    } as any);
+    const result = await controller.update(1, dto, { user: { id: 1 } } as any);
     expect(result.name).toBe('Updated');
     expect(service.update).toHaveBeenCalledWith(1, dto, 1);
   });
 
-  // assign to same user allowed
   it('should assign pet to the authenticated user', async () => {
+    // failure: this test fails if the pet is not properly assigned to the authenticated user
+    // success: if successful, the pet gets associated with the correct userId
     service.assignPetToUser.mockResolvedValue(mockPet);
-    const result = await controller.assignToUser(1, 1, {
-      user: { id: 1, username: 'u', email: 'e' },
-    } as any);
+    const result = await controller.assignToUser(1, 1, { user: { id: 1 } } as any);
     expect(result).toEqual(mockPet);
     expect(service.assignPetToUser).toHaveBeenCalledWith(1, 1, 1);
   });
 
-  // delete succeeds when owner
   it('should remove a pet when owner', async () => {
+    // failure: this test fails if the authenticated user is not the owner of the pet
+    // success: if successful, returns the removed pet object
     service.remove.mockResolvedValue(mockPet);
-    const result = await controller.remove(1, {
-      user: { id: 1, username: 'u', email: 'e' },
-    } as any);
+    const result = await controller.remove(1, { user: { id: 1 } } as any);
     expect(result).toEqual(mockPet);
     expect(service.remove).toHaveBeenCalledWith(1, 1);
   });
 
-  // authorization failure: attempt to assign to another user should be forbidden by controller before calling service
   it('should throw ForbiddenException when trying to assign to another user', async () => {
+    // failure: this test fails if controller allows assigning a pet to a different user
+    // success: if successful, a ForbiddenException is thrown
     await expect(
-      controller.assignToUser(1, 2, {
-        user: { id: 1, username: 'u', email: 'e' },
-      } as any),
+      controller.assignToUser(1, 2, { user: { id: 1 } } as any),
     ).rejects.toThrow(ForbiddenException);
   });
 
-  // simulate service-level ForbiddenException for update if service enforces it
   it('should bubble up ForbiddenException from service when updating non-owned pet', async () => {
+    // failure: this test fails if ForbiddenException from service is not propagated to the controller
+    // success: if successful, controller throws ForbiddenException when trying to update non-owned pet
     const dto: UpdatePetDto = { name: 'Updated' } as any;
-    service.update.mockRejectedValue(
-      new ForbiddenException('Not authorized to update this pet.'),
-    );
+    service.update.mockRejectedValue(new ForbiddenException('Not authorized to update this pet.'));
     await expect(
-      controller.update(1, dto, {
-        user: { id: 1, username: 'u', email: 'e' },
-      } as any),
+      controller.update(1, dto, { user: { id: 1 } } as any),
     ).rejects.toThrow(ForbiddenException);
   });
+
 });
