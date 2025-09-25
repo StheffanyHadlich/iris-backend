@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { UsersService } from '../../users/service/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -6,17 +6,23 @@ import { User } from '@prisma/client';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { RefreshTokenRepository } from '../repository/refresh-token.repository';
 import { randomBytes } from 'crypto';
+import { ConfigService } from '@nestjs/config';
+import ms from 'ms';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private readonly refreshTokenTtlMs = 7 * 24 * 60 * 60 * 1000;
+  private readonly refreshTokenTtlMs: number;
 
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
     private refreshTokenRepo: RefreshTokenRepository,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    const ttlString = this.configService.get<string>('REFRESH_TOKEN_TTL');
+    this.refreshTokenTtlMs = ms(ttlString);
+  }
 
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email);
