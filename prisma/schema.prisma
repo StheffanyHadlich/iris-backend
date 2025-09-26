@@ -13,11 +13,25 @@ enum PetStatus {
   UNDER_TREATMENT
 }
 
+enum PetSpecies {
+  DOG
+  CAT
+  BIRD
+  OTHER
+}
+
+enum PetSex {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
 enum AdoptionStatus {
   ACTIVE
   COMPLETED
   CANCELED
 }
+
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -33,15 +47,18 @@ model User {
 }
 
 model Pet {
-  id               Int       @id @default(autoincrement())
+  id               Int         @id @default(autoincrement())
   name             String
-  age              Int
-  type             String
-  race             String?
-  currentWeight    Decimal?  @db.Decimal(10, 2)
-  urlPhoto         String?   @map("url_photo")
-  status           PetStatus @default(AVAILABLE)
-  registrationDate DateTime  @map("registration_date") @db.Date
+  species          PetSpecies
+  breed            String?
+  color            String?
+  sex              PetSex      @default(UNKNOWN)
+  dateOfBirth      DateTime?   @map("date_of_birth")
+  castrated        Boolean     @default(false)
+  urlPhoto         String?     @map("url_photo")
+
+  status           PetStatus   @default(AVAILABLE)
+  registrationDate DateTime    @map("registration_date") @db.Date
 
   userId Int  @map("user_id")
   user   User @relation(fields: [userId], references: [id])

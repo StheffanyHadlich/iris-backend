@@ -1,36 +1,48 @@
-import { IsString, IsInt, IsOptional, IsEnum, Matches } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
-import { PetStatus } from '@prisma/client';
+import { IsString, IsOptional, IsEnum, IsBoolean, IsDate } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
+import { PetStatus, PetSpecies, PetSex } from '@prisma/client';
 
 export class CreatePetDto {
   @IsString()
   name: string;
 
-  @IsInt()
-  @Type(() => Number)
-  age: number;
-
-  @IsString()
-  type: string;
+  @Transform(({ value }) => value?.toUpperCase())
+  @IsEnum(PetSpecies)
+  species: PetSpecies;
 
   @IsOptional()
   @IsString()
-  race?: string;
+  breed?: string;
 
   @IsOptional()
-  @Transform(({ value }) => (value !== undefined ? String(value) : undefined))
-  currentWeight?: string;
+  @IsString()
+  color?: string;
+
+  @Transform(({ value }) => (value ? value.toUpperCase() : 'UNKNOWN'))
+  @IsEnum(PetSex)
+  @IsOptional()
+  sex?: PetSex = PetSex.UNKNOWN;
+
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  @IsOptional()
+  castrated?: boolean = false;
 
   @IsOptional()
   @IsString()
   urlPhoto?: string;
 
+  @Transform(({ value }) => value?.toUpperCase())
   @IsEnum(PetStatus)
   @IsOptional()
-  status?: PetStatus;
+  status?: PetStatus = PetStatus.AVAILABLE;
 
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: 'registrationDate must be in YYYY-MM-DD format',
-  })
-  registrationDate: string;
+  @IsDate()
+  @Type(() => Date)
+  registrationDate: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dateOfBirth?: Date;
 }

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { Pet, Prisma } from '@prisma/client';
+import { Pet, PetSex, PetStatus, Prisma } from '@prisma/client';
 import { PetsRepository } from '../repository/pets.repository';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { CreatePetDto } from '../dto/create-pet.dto';
@@ -12,31 +12,26 @@ export class PetsService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async create(dto: CreatePetDto, authUserId: number): Promise<Pet> {
-    if (!authUserId) {
-      throw new BadRequestException('Authenticated user id is required to create a pet.');
-    }
+async create(dto: CreatePetDto, authUserId: number): Promise<Pet> {
+  const user = await this.usersRepository.findById(authUserId);
+  if (!user) throw new NotFoundException(`User with id ${authUserId} not found`);
 
-    const user = await this.usersRepository.findById(authUserId);
-    if (!user) throw new NotFoundException(`User with id ${authUserId} not found`);
+  const data: Prisma.PetCreateInput = {
+    name: dto.name,
+    species: dto.species,
+    breed: dto.breed ?? undefined,
+    color: dto.color ?? undefined,
+    sex: dto.sex ?? PetSex.UNKNOWN,
+    castrated: dto.castrated ?? false,
+    urlPhoto: dto.urlPhoto ?? undefined,
+    status: dto.status ?? PetStatus.AVAILABLE,
+    registrationDate: new Date(dto.registrationDate),
+    dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
+    user: { connect: { id: authUserId } },
+  };
 
-    const data: Prisma.PetCreateInput = {
-      name: dto.name,
-      age: dto.age,
-      type: dto.type,
-      race: dto.race ?? undefined,
-      currentWeight:
-        dto.currentWeight !== undefined && dto.currentWeight !== null
-          ? new Prisma.Decimal(dto.currentWeight)
-          : undefined,
-      urlPhoto: dto.urlPhoto ?? undefined,
-      status: dto.status ?? undefined,
-      registrationDate: new Date(dto.registrationDate),
-      user: { connect: { id: authUserId } },
-    };
-
-    return this.petsRepository.create(data);
-  }
+  return this.petsRepository.create(data);
+}
 
   async assignPetToUser(
     petId: number,
@@ -90,22 +85,17 @@ export class PetsService {
     const pet = await this.petsRepository.findById(id);
     if (!pet) throw new NotFoundException(`Pet with id ${id} not found`);
 
-    if (authUserId && pet.userId && pet.userId !== authUserId) {
-      throw new ForbiddenException('Not authorized to update this pet.');
-    }
-
     const data: Prisma.PetUpdateInput = {
       name: dto.name ?? undefined,
-      age: dto.age ?? undefined,
-      type: dto.type ?? undefined,
-      race: dto.race ?? undefined,
-      currentWeight:
-        dto.currentWeight !== undefined && dto.currentWeight !== null
-          ? new Prisma.Decimal(dto.currentWeight)
-          : undefined,
+      species: dto.species ?? undefined,
+      breed: dto.breed ?? undefined,
+      color: dto.color ?? undefined,
+      sex: dto.sex ?? undefined,
+      castrated: dto.castrated ?? undefined,
       urlPhoto: dto.urlPhoto ?? undefined,
       status: dto.status ?? undefined,
       registrationDate: dto.registrationDate ? new Date(dto.registrationDate) : undefined,
+      dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
     };
 
     return this.petsRepository.update(id, data);
