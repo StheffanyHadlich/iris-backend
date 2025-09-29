@@ -41,6 +41,18 @@ export class PetsController {
     return this.petsService.getPetsByUser(authUserId);
   }
 
+  @Get('species')
+  @ApiOperation({ summary: 'List available pet species options.' })
+  @ApiResponse({ status: 200, description: 'Array of species strings.' })
+  async getSpecies(): Promise<{ value: string; label: string }[]> {
+    return [
+      { value: 'DOG', label: 'Dog 🐶' },
+      { value: 'CAT', label: 'Cat 🐱' },
+      { value: 'BIRD', label: 'Bird 🐦' },
+      { value: 'OTHER', label: 'Other 🐾' },
+    ];
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get single pet by id (only if owned by authenticated user).' })
   @ApiParam({ name: 'id', type: Number })
