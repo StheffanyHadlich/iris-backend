@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { setupSwagger } from './swagger.config';
 
+let server: any;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const WEBSITE_URL = 'http://localhost:3001';
+  const WEBSITE_URL = process.env.WEBSITE_URL ?? 'http://localhost:3001';
 
   app.enableCors({
     origin: WEBSITE_URL,
@@ -15,6 +17,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   setupSwagger(app);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.init(); 
+  return app.getHttpAdapter().getInstance();
 }
-bootstrap();
+
+export default async function handler(req,res){
+  if (!server) {
+    server = await bootstrap();
+  }
+  return server(req, res);
+}
