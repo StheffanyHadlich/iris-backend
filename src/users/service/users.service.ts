@@ -1,10 +1,9 @@
-// src/users/users.service.ts
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -29,11 +28,19 @@ export class UsersService {
     return this.usersRepository.findAll();
   }
 
-  findOne(id: number) {
-    return this.usersRepository.findOne(id);
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
-  findByEmail(email: string) {
+  async findById(userId: number): Promise<User> {
+    const user = await this.usersRepository.findOne(userId);
+    if (!user) throw new NotFoundException('User not found');
+    return user as User;
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findByEmail(email);
   }
 
@@ -44,7 +51,9 @@ export class UsersService {
       payload.password = await bcrypt.hash(payload.password as string, 10);
     }
 
-    return this.usersRepository.update(id, payload);
+    const user = await this.usersRepository.update(id, payload);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
   async remove(id: number) {
