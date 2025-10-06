@@ -1,15 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  ForbiddenException,
-} from '@nestjs/common';
-import { Pet, Prisma } from '@prisma/client';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Pet, PetSex, PetStatus, Prisma } from '@prisma/client';
 import { PetsRepository } from '../repository/pets.repository';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { CreatePetDto } from '../dto/create-pet.dto';
 import { UpdatePetDto } from '../dto/update-pet.dto';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PetsService {
@@ -18,41 +12,26 @@ export class PetsService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async create(dto: CreatePetDto, authUserId?: number): Promise<Pet> {
-    let finalUserId: number | undefined = undefined;
+async create(dto: CreatePetDto, authUserId: number): Promise<Pet> {
+  const user = await this.usersRepository.findById(authUserId);
+  if (!user) throw new NotFoundException(`User with id ${authUserId} not found`);
 
-    if (dto.userId !== undefined && dto.userId !== null) {
-      finalUserId = dto.userId;
-      if (authUserId && finalUserId !== authUserId) {
-        throw new ForbiddenException('Cannot create pet for another user.');
-      }
-    } else if (authUserId) {
-      finalUserId = authUserId;
-    }
+  const data: Prisma.PetCreateInput = {
+    name: dto.name,
+    species: dto.species,
+    breed: dto.breed ?? undefined,
+    color: dto.color ?? undefined,
+    sex: dto.sex ?? PetSex.UNKNOWN,
+    castrated: dto.castrated ?? false,
+    urlPhoto: dto.urlPhoto ?? undefined,
+    status: dto.status ?? PetStatus.AVAILABLE,
+    registrationDate: new Date(dto.registrationDate),
+    dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
+    user: { connect: { id: authUserId } },
+  };
 
-    if (finalUserId) {
-      const user = await this.usersRepository.findById(finalUserId);
-      if (!user)
-        throw new NotFoundException(`User with id ${finalUserId} not found`);
-    }
-
-    const data: Prisma.PetCreateInput = {
-      name: dto.name,
-      age: dto.age,
-      type: dto.type,
-      race: dto.race ?? undefined,
-      currentWeight:
-        dto.currentWeight !== undefined && dto.currentWeight !== null
-          ? new Prisma.Decimal(dto.currentWeight)
-          : undefined,
-      urlPhoto: dto.urlPhoto ?? undefined,
-      status: dto.status ?? undefined,
-      registrationDate: new Date(dto.registrationDate),
-      user: finalUserId ? { connect: { id: finalUserId } } : undefined,
-    };
-
-    return this.petsRepository.create(data);
-  }
+  return this.petsRepository.create(data);
+}
 
   async assignPetToUser(
     petId: number,
@@ -102,32 +81,21 @@ export class PetsService {
     return this.petsRepository.findAll();
   }
 
-  async update(
-    id: number,
-    dto: UpdatePetDto,
-    authUserId?: number,
-  ): Promise<Pet> {
+  async update(id: number, dto: UpdatePetDto, authUserId?: number): Promise<Pet> {
     const pet = await this.petsRepository.findById(id);
     if (!pet) throw new NotFoundException(`Pet with id ${id} not found`);
 
-    if (authUserId && pet.userId && pet.userId !== authUserId) {
-      throw new ForbiddenException('Not authorized to update this pet.');
-    }
-
     const data: Prisma.PetUpdateInput = {
       name: dto.name ?? undefined,
-      age: dto.age ?? undefined,
-      type: dto.type ?? undefined,
-      race: dto.race ?? undefined,
-      currentWeight:
-        dto.currentWeight !== undefined && dto.currentWeight !== null
-          ? new Prisma.Decimal(dto.currentWeight)
-          : undefined,
+      species: dto.species ?? undefined,
+      breed: dto.breed ?? undefined,
+      color: dto.color ?? undefined,
+      sex: dto.sex ?? undefined,
+      castrated: dto.castrated ?? undefined,
       urlPhoto: dto.urlPhoto ?? undefined,
       status: dto.status ?? undefined,
-      registrationDate: dto.registrationDate
-        ? new Date(dto.registrationDate)
-        : undefined,
+      registrationDate: dto.registrationDate ? new Date(dto.registrationDate) : undefined,
+      dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
     };
 
     return this.petsRepository.update(id, data);
