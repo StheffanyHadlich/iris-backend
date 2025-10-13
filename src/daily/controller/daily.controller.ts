@@ -1,42 +1,34 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-} from '@nestjs/common';
-import { DailyService } from '../service/daily.service';
-import { CreateDailyDto } from '../dto/create-daily.dto';
-import { UpdateDailyDto } from '../dto/update-daily.dto';
+import { Controller, Post, Get, Body, Param, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { DiaryService } from '../service/daily.service';
+import { CreateDiaryDto } from '../dto/create-daily.dto';
+import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 
-@Controller('daily')
-export class DailyController {
-  constructor(private readonly dailyService: DailyService) {}
+@ApiTags('pets/diary')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('pets/:petId/diary')
+export class DiaryController {
+  constructor(private readonly diaryService: DiaryService) {}
 
   @Post()
-  create(@Body() createDailyDto: CreateDailyDto) {
-    return this.dailyService.create(createDailyDto);
+  @ApiOperation({ summary: 'Create diary entry for pet (owner only)' })
+  @ApiParam({ name: 'petId', type: Number })
+  @ApiBody({ type: CreateDiaryDto })
+  @ApiResponse({ status: 201, description: 'Diary entry created' })
+  async create(
+    @Param('petId', ParseIntPipe) petId: number,
+    @Body() dto: CreateDiaryDto,
+    @Req() req: { user: { id: number } },
+  ) {
+    return this.diaryService.create(petId, dto, req.user.id);
   }
 
   @Get()
-  findAll() {
-    return this.dailyService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dailyService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateDailyDto: UpdateDailyDto) {
-    return this.dailyService.update(+id, updateDailyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.dailyService.remove(+id);
+  @ApiOperation({ summary: 'List diary entries for pet (owner only)' })
+  @ApiParam({ name: 'petId', type: Number })
+  @ApiResponse({ status: 200, description: 'Array of diary entries' })
+  async list(@Param('petId', ParseIntPipe) petId: number, @Req() req: { user: { id: number } }) {
+    return this.diaryService.list(petId, req.user.id);
   }
 }
