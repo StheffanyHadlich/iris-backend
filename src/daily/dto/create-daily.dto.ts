@@ -1,24 +1,11 @@
-import { IsInt, IsOptional, IsDateString, IsString } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
+import { IsString, IsNotEmpty, Matches } from 'class-validator';
+import { Transform } from 'class-transformer';
 
-export class CreateDailyDto {
-  @IsInt()
-  @Type(() => Number)
-  petId: number;
+export class CreateDiaryDto {
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: 'date must be YYYY-MM-DD' })
+  date: string;
 
-  @IsDateString()
-  @Transform(({ value }) => new Date(value))
-  dailyDate: Date;
-
-  @IsOptional()
-  @Transform(({ value }) => (value ? parseFloat(value) : undefined))
-  weight?: number;
-
-  @IsOptional()
   @IsString()
-  notes?: string;
-
-  @IsOptional()
-  @IsString()
-  prescriptionNotes?: string;
+  @IsNotEmpty()
+  description: string;
 }
