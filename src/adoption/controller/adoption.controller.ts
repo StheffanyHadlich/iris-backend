@@ -1,17 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { AdoptionService } from '../service/adoption.service';
 import { CreateAdoptionDto } from '../dto/create-adoption.dto';
 import { UpdateAdoptionDto } from '../dto/update-adoption.dto';
 
-@Controller('adoption')
+@Controller('adoptions')
 export class AdoptionController {
   constructor(private readonly adoptionService: AdoptionService) {}
 
@@ -31,11 +23,8 @@ export class AdoptionController {
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAdoptionDto: UpdateAdoptionDto,
-  ) {
-    return this.adoptionService.update(+id, updateAdoptionDto);
+  update(@Param('id') id: string, @Body() dto: UpdateAdoptionDto) {
+    return this.adoptionService.update(+id, dto);
   }
 
   @Delete(':id')

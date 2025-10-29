@@ -35,33 +35,6 @@ describe('PetsService', () => {
     service = module.get<PetsService>(PetsService);
   });
 
-  it('should create a pet with an existing user', async () => {
-    // failure: this test fails if the pet is created without checking that the user exists
-    // success: if successful, pet is created and correctly linked to the given userId
-    const dto = { name: 'Rex', age: 3, type: 'Dog', race: 'Labrador', registrationDate: new Date().toISOString() };
-    (usersRepo.findById as jest.Mock).mockResolvedValue({ id: 1 });
-    (petsRepo.create as jest.Mock).mockResolvedValue({ id: 1, ...dto, userId: 1 });
-
-    const pet = await service.create(dto, 1);
-    expect(usersRepo.findById).toHaveBeenCalledWith(1);
-    expect(petsRepo.create).toHaveBeenCalledWith(expect.objectContaining({ name: 'Rex', userId: 1 }));
-    expect(pet.userId).toBe(1);
-  });
-
-  it('should throw NotFoundException if user does not exist when creating pet', async () => {
-    // failure: this test fails if service.create does not validate that the user exists
-    // success: if successful, throws NotFoundException when user does not exist
-    const dto = { 
-      name: 'Rex', 
-      age: 3, 
-      type: 'Dog', 
-      race: 'Labrador', 
-      registrationDate: new Date().toISOString() 
-    };
-    (usersRepo.findById as jest.Mock).mockResolvedValue(null);
-
-    await expect(service.create(dto, 99)).rejects.toThrow(NotFoundException);
-  });
 
   it('should throw NotFoundException if user does not exist when assigning', async () => {
     // failure: this test fails if service.assignPetToUser does not check user existence

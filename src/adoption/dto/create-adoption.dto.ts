@@ -1,26 +1,15 @@
-import { IsInt, IsOptional, IsDateString, IsEnum } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
-import { AdoptionStatus } from '@prisma/client';
+import { IsInt, IsNotEmpty, IsDateString } from 'class-validator';
 
 export class CreateAdoptionDto {
   @IsInt()
-  @Type(() => Number)
-  petId: number;
-
-  @IsInt()
-  @Type(() => Number)
+  @IsNotEmpty()
   adopterId: number;
 
-  @IsDateString()
-  @Transform(({ value }) => new Date(value))
-  startDate: string;
+  @IsInt()
+  @IsNotEmpty()
+  petId: number;
 
-  @IsOptional()
   @IsDateString()
-  @Transform(({ value }) => new Date(value))
-  endDate?: string;
-
-  @IsEnum(AdoptionStatus)
-  @IsOptional()
-  status?: AdoptionStatus;
+  @IsNotEmpty()
+  adoptionDate: string;
 }
