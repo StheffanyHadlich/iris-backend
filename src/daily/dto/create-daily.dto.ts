@@ -3,7 +3,6 @@ import { Transform } from 'class-transformer';
 
 export class CreateDiaryDto {
   @Transform(({ value }) => {
-    // in any case comes DD-MM-YYYY format, auto convert to YYYY-MM-DD
     if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
       const [day, month, year] = value.split('-');
       return `${year}-${month}-${day}`;
