@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { DailyService } from './service/daily.service';
-import { DailyController } from './controller/daily.controller';
+import { DiaryService } from './service/daily.service';
+import { DiaryController } from './controller/daily.controller';
 
 @Module({
-  providers: [DailyService],
-  controllers: [DailyController],
+  providers: [DiaryService],
+  controllers: [DiaryController],
 })
 export class DailyModule {}
