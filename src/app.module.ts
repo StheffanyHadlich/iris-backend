@@ -15,7 +15,7 @@ import { AdoptionModule } from './adoption/adoption.module';
     PrismaModule,
     PetsModule,
     AdopterModule,
-    DailyModule,
+  //  DailyModule,
     MedicalHistoryModule,
     AdoptionModule,
     AuthModule,
