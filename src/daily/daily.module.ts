@@ -1,4 +1,3 @@
-// src/daily/daily.module.ts
 import { Module } from '@nestjs/common';
 import { DiaryService } from './service/daily.service';
 import { DiaryController } from './controller/daily.controller';
