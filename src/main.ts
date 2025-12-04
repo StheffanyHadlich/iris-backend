@@ -7,10 +7,12 @@ let server: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const WEBSITE_URL = process.env.WEBSITE_URL ?? 'http://localhost:3001';
 
   app.enableCors({
-    origin: WEBSITE_URL,
+    origin: [
+      'https://iris-frontend-ecru.vercel.app',
+      'http://localhost:3001'
+    ],
     credentials: true,
   });
 
