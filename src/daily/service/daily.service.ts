@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { DiaryRepository } from '../repository/diary.repository';
-import { UsersRepository } from '../../users/repository/users.repository';
 import { PetsRepository } from '../../pets/repository/pets.repository';
 import { CreateDiaryDto } from '../dto/create-daily.dto';
 import { Daily } from '@prisma/client';
